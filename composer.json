@@ -1,0 +1,27 @@
+{
+    "name": "radphp/twig-bundle",
+    "type": "twig-bundle",
+    "license": "MIT",
+    "description": "Twig helper bundle",
+    "keywords": ["RadPHP", "twig", "bundle"],
+    "authors": [
+        {
+            "name": "Mohammad Abdoli Rad",
+            "email": "m.abdolirad@gmail.com",
+            "role": "Project Founder"
+        },
+        {
+            "name": "Omid Mottaghi Rad",
+            "email": "omidmr@gmail.com",
+            "role": "Project Founder"
+        }
+    ],
+    "require-dev": {
+        "composer/composer": "~1.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Twig\\": "."
+        }
+    }
+}
