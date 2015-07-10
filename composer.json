@@ -17,7 +17,7 @@
         }
     ],
     "require": {
-        "radphp/radphp: "dev-master",
+        "radphp/radphp": "dev-master",
         "twig/twig": "1.6.5"
     },
     "autoload": {
