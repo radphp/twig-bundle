@@ -16,6 +16,9 @@
             "role": "Project Founder"
         }
     ],
+    "require": {
+        "radphp/radphp: "*"
+    },
     "autoload": {
         "psr-4": {
             "Twig\\": "."
