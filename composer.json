@@ -1,6 +1,6 @@
 {
     "name": "radphp/twig-bundle",
-    "type": "twig-bundle",
+    "type": "radphp-bundle",
     "license": "MIT",
     "description": "Twig helper bundle",
     "keywords": ["RadPHP", "twig", "bundle"],
