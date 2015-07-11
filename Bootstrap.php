@@ -26,7 +26,12 @@ class Bootstrap extends Bundle
     {
         $this->getContainer()->setShared('twig',
             function () {
-                $loader = new \Twig_Loader_Filesystem([APP_DIR . '/Resource/templates/']);
+                $loader = new \Twig_Loader_Filesystem([]);
+                foreach (Config::get('bundles', []) as $bundleName => $options) {
+                    $loader->addPath(SRC_DIR . "/$bundleName/Resource/templates/", $bundleName);
+                }
+
+                //var_dump($loader->getPaths());die;
                 $twig = new \Twig_Environment($loader);
 
                 return $twig;
