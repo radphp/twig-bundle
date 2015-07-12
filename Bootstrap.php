@@ -28,11 +28,21 @@ class Bootstrap extends Bundle
             function () {
                 $loader = new \Twig_Loader_Filesystem([]);
                 foreach (Config::get('bundles', []) as $bundleName => $options) {
-                    $loader->addPath(SRC_DIR . "/$bundleName/Resource/templates/", $bundleName);
+                    $loader->addPath(SRC_DIR . "/$bundleName/Resource/template/", $bundleName);
                 }
 
-                //var_dump($loader->getPaths());die;
                 $twig = new \Twig_Environment($loader);
+
+                // add route generator function {
+                $function = new \Twig_SimpleFunction(
+                    'generateUrl',
+                    function ($url = null, $options = null) {
+                        $router = $this->getRouter();
+
+                        return $router->generateUrl($url, $options);
+                    }
+                );
+                $twig->addFunction($function);
 
                 return $twig;
             }
