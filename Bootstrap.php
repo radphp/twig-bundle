@@ -28,7 +28,9 @@ class Bootstrap extends Bundle
             function () {
                 $loader = new \Twig_Loader_Filesystem([]);
                 foreach (Config::get('bundles', []) as $bundleName => $options) {
-                    $loader->addPath(SRC_DIR . "/$bundleName/Resource/template/", $bundleName);
+                    if (is_dir(SRC_DIR . "/$bundleName/Resource/template/")) {
+                        $loader->addPath(SRC_DIR . "/$bundleName/Resource/template/", $bundleName);
+                    }
                 }
 
                 $twig = new \Twig_Environment($loader);
