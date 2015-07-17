@@ -4,6 +4,7 @@ namespace Twig;
 
 use Rad\Config;
 use Rad\Core\Bundle;
+use Rad\Routing\Router;
 
 /**
  * Twig Bootstrap
@@ -38,10 +39,13 @@ class Bootstrap extends Bundle
                 // add route generator function {
                 $function = new \Twig_SimpleFunction(
                     'generateUrl',
-                    function ($url = null, $options = null) {
+                    function ($url = null, $withParams = true, $withLanguage = true) {
                         $router = $this->getRouter();
 
-                        return $router->generateUrl($url, $options);
+                        return $router->generateUrl($url, [
+                            Router::GEN_OPT_LANGUAGE => $withLanguage,
+                            Router::GEN_OPT_WITH_PARAMS => $withParams,
+                        ]);
                     }
                 );
                 $twig->addFunction($function);
