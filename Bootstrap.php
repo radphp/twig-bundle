@@ -39,12 +39,13 @@ class Bootstrap extends Bundle
                 // add route generator function {
                 $function = new \Twig_SimpleFunction(
                     'generateUrl',
-                    function ($url = null, $withParams = true, $withLanguage = true) {
+                    function ($url = null, $withParams = true, $withLanguage = true, $incDomain = true) {
                         $router = $this->getRouter();
 
                         return $router->generateUrl($url, [
                             Router::GEN_OPT_LANGUAGE => $withLanguage,
                             Router::GEN_OPT_WITH_PARAMS => $withParams,
+                            Router::GEN_OPT_INC_DOMAIN => $incDomain,
                         ]);
                     }
                 );
