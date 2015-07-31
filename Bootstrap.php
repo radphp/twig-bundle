@@ -2,7 +2,7 @@
 
 namespace Twig;
 
-use Rad\Config;
+use Rad\Configure\Config;
 use Rad\Core\Bundle;
 use Rad\Routing\Router;
 
