@@ -2,8 +2,10 @@
 
 namespace Twig;
 
+use Twig\Library\Helper as TwigHelper;
 use Rad\Configure\Config;
 use Rad\Core\Bundle;
+use Rad\DependencyInjection\Registry;
 use Rad\Routing\Router;
 
 /**
@@ -36,20 +38,112 @@ class Bootstrap extends Bundle
 
                 $twig = new \Twig_Environment($loader);
 
-                // add route generator function {
-                $function = new \Twig_SimpleFunction(
-                    'generateUrl',
-                    function ($url = null, $withParams = true, $withLanguage = true, $incDomain = true) {
-                        $router = $this->getRouter();
+                // add route generator function
+                $twig->addFunction(new \Twig_SimpleFunction(
+                        'generateUrl',
+                        function ($url = null, $withParams = true, $withLanguage = true, $incDomain = true) {
+                            $router = $this->getRouter();
 
-                        return $router->generateUrl($url, [
-                            Router::GEN_OPT_LANGUAGE => $withLanguage,
-                            Router::GEN_OPT_WITH_PARAMS => $withParams,
-                            Router::GEN_OPT_INC_DOMAIN => $incDomain,
-                        ]);
-                    }
+                            return $router->generateUrl($url, [
+                                Router::GEN_OPT_LANGUAGE => $withLanguage,
+                                Router::GEN_OPT_WITH_PARAMS => $withParams,
+                                Router::GEN_OPT_INC_DOMAIN => $incDomain,
+                            ]);
+                        }
+                    )
                 );
-                $twig->addFunction($function);
+
+                /** @var Registry $registry */
+                $registry = $this->getContainer()->get('registry');
+
+                // return css tags
+                $twig->addFunction(
+                    new \Twig_SimpleFunction(
+                        'getCss',
+                        function () use ($registry) {
+                            $result = $registry->get(TwigHelper::GLOBAL_CSS, TwigHelper::TWIG_REGISTRY_SCOPE);
+
+                            if (is_array($result)) {
+                                foreach ($result as $row) {
+                                    $order[]  = $row['priority'];
+                                }
+
+                                array_multisort($order, $result);
+
+                                array_walk($result, function(&$item){
+                                    $item = $item['css'];
+
+                                    // if it is direct link to file
+                                    if (strpos($item, 'file://') === 0) {
+                                        $item = substr($item, 7);
+                                        $item = "<link rel=\"stylesheet\" href=\"$item\">";
+                                    } else {
+                                        $item = "<style>\n$item\n</style>";
+                                    }
+                                });
+
+                                $result = implode("\n", $result);
+                            }
+
+                            return strval($result);
+                        },
+                        [
+                            'is_safe' => ['html']
+                        ]
+                    )
+                );
+
+                // return js tags
+                $twig->addFunction(new \Twig_SimpleFunction(
+                        'getJs',
+                        function () use ($registry) {
+                            $result = $registry->get(TwigHelper::GLOBAL_JS, TwigHelper::TWIG_REGISTRY_SCOPE);
+
+                            if (is_array($result)) {
+                                foreach ($result as $row) {
+                                    $order[]  = $row['priority'];
+                                }
+
+                                array_multisort($order, $result);
+
+                                array_walk($result, function(&$item){
+                                    $item = $item['js'];
+
+                                    // if it is direct link to file
+                                    if (strpos($item, 'file://') === 0) {
+                                        $item = substr($item, 7);
+                                        $item = "<script src=\"$item\"></script>";
+                                    } else {
+                                        $item = "<script>\n$item\n</script>";
+                                    }
+                                });
+
+                                $result = implode("\n", $result);
+                            }
+
+                            return strval($result);
+                        },
+                        [
+                            'is_safe' => ['html']
+                        ]
+                    )
+                );
+
+                // return master twig
+                $twig->addFunction(new \Twig_SimpleFunction(
+                        'getMasterTwig',
+                        function () use ($registry) {
+                            $result = $registry->get(TwigHelper::MASTER_TWIG, TwigHelper::TWIG_REGISTRY_SCOPE);
+                            $item = array_pop($result);
+                            $registry->set(TwigHelper::MASTER_TWIG, $result, TwigHelper::TWIG_REGISTRY_SCOPE);
+
+                            return strval($item);
+                        },
+                        [
+                            'is_safe' => ['html']
+                        ]
+                    )
+                );
 
                 return $twig;
             }
