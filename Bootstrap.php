@@ -2,6 +2,11 @@
 
 namespace Twig;
 
+use Symfony\Bridge\Twig\Extension\FormExtension;
+use Symfony\Bridge\Twig\Extension\TranslationExtension;
+use Symfony\Bridge\Twig\Form\TwigRenderer;
+use Symfony\Bridge\Twig\Form\TwigRendererEngine;
+use Symfony\Component\Translation\IdentityTranslator;
 use Twig\Library\Helper as TwigHelper;
 use Rad\Configure\Config;
 use Rad\Core\Bundle;
@@ -35,8 +40,12 @@ class Bootstrap extends Bundle
                         $loader->addPath(SRC_DIR . "/$bundleName/Resource/template/", $bundleName);
                     }
                 }
+                $loader->addPath(ROOT_DIR . '/vendor/symfony/twig-bridge/Resources/', 'TwigBridgeTemplates');
 
-                $twig = new \Twig_Environment($loader);
+                $twig = new \Twig_Environment($loader, [
+                    'debug' => true,
+                    'cache' => CACHE_DIR . "/twig_template/",
+                ]);
 
                 // add route generator function
                 $twig->addFunction(new \Twig_SimpleFunction(
@@ -144,6 +153,11 @@ class Bootstrap extends Bundle
                         ]
                     )
                 );
+
+                $renderer = new TwigRendererEngine(['@TwigBridgeTemplates/views/Form/form_div_layout.html.twig']);
+                $renderer->setEnvironment($twig);
+                $twig->addExtension(new FormExtension(new TwigRenderer($renderer)));
+                $twig->addExtension(new TranslationExtension(new IdentityTranslator()));
 
                 return $twig;
             }
