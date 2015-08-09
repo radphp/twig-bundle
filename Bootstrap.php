@@ -35,17 +35,28 @@ class Bootstrap extends Bundle
         $this->getContainer()->setShared('twig',
             function () {
                 $loader = new \Twig_Loader_Filesystem([]);
+                $loader->addPath(SRC_DIR . "/App/Resource/template");
+
                 foreach (Config::get('bundles', []) as $bundleName => $options) {
                     if (is_dir(SRC_DIR . "/$bundleName/Resource/template/")) {
-                        $loader->addPath(SRC_DIR . "/$bundleName/Resource/template/", $bundleName);
+                        $loader->addPath(SRC_DIR . "/$bundleName/Resource/template", $bundleName);
                     }
                 }
-                $loader->addPath(ROOT_DIR . '/vendor/symfony/twig-bridge/Resources/', 'TwigBridgeTemplates');
+                $loader->addPath(ROOT_DIR . '/vendor/symfony/twig-bridge/Resources', 'TwigBridgeTemplates');
 
-                $twig = new \Twig_Environment($loader, [
-                    'debug' => true,
-                    'cache' => CACHE_DIR . "/twig_template/",
-                ]);
+                if (Config::get('debug', false)) {
+                    $options = [
+                        'debug' => true,
+                        'cache' => false,
+                    ];
+                } else {
+                    $options = [
+                        'debug' => false,
+                        'cache' => CACHE_DIR . '/twig/',
+                    ];
+                }
+
+                $twig = new \Twig_Environment($loader, $options);
 
                 // add route generator function
                 $twig->addFunction(new \Twig_SimpleFunction(
