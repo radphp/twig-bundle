@@ -20,8 +20,13 @@ use Rad\Routing\Router;
  */
 class Bootstrap extends Bundle
 {
+    /**
+     * {@inheritdoc}
+     */
     public function startup()
     {
+        parent::startup();
+
         $this->initTwig();
     }
 
@@ -85,12 +90,12 @@ class Bootstrap extends Bundle
 
                             if (is_array($result)) {
                                 foreach ($result as $row) {
-                                    $order[]  = $row['priority'];
+                                    $order[] = $row['priority'];
                                 }
 
                                 array_multisort($order, $result);
 
-                                array_walk($result, function(&$item){
+                                array_walk($result, function (&$item) {
                                     $item = $item['css'];
 
                                     // if it is direct link to file
@@ -121,12 +126,12 @@ class Bootstrap extends Bundle
 
                             if (is_array($result)) {
                                 foreach ($result as $row) {
-                                    $order[]  = $row['priority'];
+                                    $order[] = $row['priority'];
                                 }
 
                                 array_multisort($order, $result);
 
-                                array_walk($result, function(&$item){
+                                array_walk($result, function (&$item) {
                                     $item = $item['js'];
 
                                     // if it is direct link to file
