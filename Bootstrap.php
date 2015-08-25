@@ -170,6 +170,8 @@ class Bootstrap extends Bundle
                     )
                 );
 
+                Library\Helper::addMasterTwig('@App/master.twig');
+
                 $renderer = new TwigRendererEngine(['@TwigBridgeTemplates/views/Form/form_div_layout.html.twig']);
                 $renderer->setEnvironment($twig);
                 $twig->addExtension(new FormExtension(new TwigRenderer($renderer)));
