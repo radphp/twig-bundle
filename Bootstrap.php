@@ -12,6 +12,7 @@ use Rad\Configure\Config;
 use Rad\Core\Bundle;
 use Rad\DependencyInjection\Registry;
 use Rad\Routing\Router;
+use Twig_Extension_Debug;
 
 /**
  * Twig Bootstrap
@@ -62,6 +63,9 @@ class Bootstrap extends Bundle
                 }
 
                 $twig = new \Twig_Environment($loader, $options);
+                if (Config::get('debug', false)) {
+                    $twig->addExtension(new Twig_Extension_Debug());
+                }
 
                 // add route generator function
                 $twig->addFunction(new \Twig_SimpleFunction(
@@ -74,6 +78,14 @@ class Bootstrap extends Bundle
                                 Router::GEN_OPT_WITH_PARAMS => $withParams,
                                 Router::GEN_OPT_INC_DOMAIN => $incDomain,
                             ]);
+                        }
+                    )
+                );
+
+                $twig->addFunction(new \Twig_SimpleFunction(
+                        'getService',
+                        function ($name, array $args = []) {
+                            return $this->getContainer()->get($name, $args);
                         }
                     )
                 );
