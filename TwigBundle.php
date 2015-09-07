@@ -3,6 +3,7 @@
 namespace Twig;
 
 use Rad\Core\AbstractBundle;
+use Rad\Core\Bundles;
 use Symfony\Bridge\Twig\Extension\FormExtension;
 use Symfony\Bridge\Twig\Extension\TranslationExtension;
 use Symfony\Bridge\Twig\Form\TwigRenderer;
@@ -31,7 +32,7 @@ class TwigBundle extends AbstractBundle
                 $loader = new \Twig_Loader_Filesystem([]);
                 $loader->addPath(SRC_DIR . "/App/Resource/template");
 
-                foreach (Config::get('bundles', []) as $bundleName => $options) {
+                foreach (Bundles::getLoaded() as $bundleName) {
                     if (is_dir(SRC_DIR . "/$bundleName/Resource/template/")) {
                         $loader->addPath(SRC_DIR . "/$bundleName/Resource/template", $bundleName);
                     }
