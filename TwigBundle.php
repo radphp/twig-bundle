@@ -2,6 +2,7 @@
 
 namespace Twig;
 
+use Rad\Core\AbstractBundle;
 use Symfony\Bridge\Twig\Extension\FormExtension;
 use Symfony\Bridge\Twig\Extension\TranslationExtension;
 use Symfony\Bridge\Twig\Form\TwigRenderer;
@@ -9,34 +10,21 @@ use Symfony\Bridge\Twig\Form\TwigRendererEngine;
 use Symfony\Component\Translation\IdentityTranslator;
 use Twig\Library\Helper as TwigHelper;
 use Rad\Configure\Config;
-use Rad\Core\Bundle;
 use Rad\DependencyInjection\Registry;
 use Rad\Routing\Router;
 use Twig_Extension_Debug;
 
 /**
- * Twig Bootstrap
+ * Twig Bundle
  *
  * @package Twig
  */
-class Bootstrap extends Bundle
+class TwigBundle extends AbstractBundle
 {
     /**
      * {@inheritdoc}
      */
-    public function startup()
-    {
-        parent::startup();
-
-        $this->initTwig();
-    }
-
-    /**
-     * Initialize twig object
-     *
-     * @return void
-     */
-    protected function initTwig()
+    public function loadService()
     {
         $this->getContainer()->setShared('twig',
             function () {
