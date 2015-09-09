@@ -155,6 +155,20 @@ class TwigBundle extends AbstractBundle
                     )
                 );
 
+                $twig->addFunction(new \Twig_SimpleFilter(
+                    'addCss',
+                    function ($css, $priority = 0) {
+                        TwigHelper::addCss($css, $priority);
+                    }
+                ));
+
+                $twig->addFunction(new \Twig_SimpleFilter(
+                    'addJs',
+                    function ($js, $priority = 0) {
+                        TwigHelper::addJs($js, $priority);
+                    }
+                ));
+
                 // return master twig
                 $twig->addFunction(new \Twig_SimpleFunction(
                         'getMasterTwig',
