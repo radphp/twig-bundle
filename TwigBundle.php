@@ -86,8 +86,12 @@ class TwigBundle extends AbstractBundle
                 $twig->addFunction(
                     new \Twig_SimpleFunction(
                         'getCss',
-                        function () use ($registry) {
+                        function ($css = null, $priority = 0) use ($registry) {
                             $result = $registry->get(TwigHelper::GLOBAL_CSS, TwigHelper::TWIG_REGISTRY_SCOPE);
+
+                            if (null !== $css) {
+                                $result = [['css' => $css, 'priority' => $priority]];
+                            }
 
                             if (is_array($result)) {
                                 foreach ($result as $row) {
@@ -122,8 +126,12 @@ class TwigBundle extends AbstractBundle
                 // return js tags
                 $twig->addFunction(new \Twig_SimpleFunction(
                         'getJs',
-                        function () use ($registry) {
+                        function ($js = null, $priority = 0) use ($registry) {
                             $result = $registry->get(TwigHelper::GLOBAL_JS, TwigHelper::TWIG_REGISTRY_SCOPE);
+
+                            if (null !== $js) {
+                                $result = [['js' => $js, 'priority' => $priority]];
+                            }
 
                             if (is_array($result)) {
                                 foreach ($result as $row) {
