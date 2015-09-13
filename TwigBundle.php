@@ -8,7 +8,16 @@ use Symfony\Bridge\Twig\Extension\FormExtension;
 use Symfony\Bridge\Twig\Extension\TranslationExtension;
 use Symfony\Bridge\Twig\Form\TwigRenderer;
 use Symfony\Bridge\Twig\Form\TwigRendererEngine;
+use Symfony\Component\Form\Extension\HttpFoundation\HttpFoundationExtension;
+use Symfony\Component\Form\Extension\Validator\ValidatorExtension;
+use Symfony\Component\Form\Forms;
+use Symfony\Component\Form\ResolvedFormTypeFactory;
 use Symfony\Component\Translation\IdentityTranslator;
+use Symfony\Component\Validator\ConstraintValidatorFactory;
+use Symfony\Component\Validator\Mapping\ClassMetadataFactory;
+use Symfony\Component\Validator\Mapping\Factory\LazyLoadingMetadataFactory;
+use Symfony\Component\Validator\Mapping\Loader\StaticMethodLoader;
+use Symfony\Component\Validator\Validation;
 use Twig\Library\Helper as TwigHelper;
 use Rad\Configure\Config;
 use Rad\DependencyInjection\Registry;
@@ -203,5 +212,28 @@ class TwigBundle extends AbstractBundle
                 return $twig;
             }
         );
+
+        $this->getContainer()->setShared('form_factory', function () {
+            if (class_exists('Symfony\Component\Validator\Mapping\Factory\LazyLoadingMetadataFactory')) {
+                $metadataFactory = new LazyLoadingMetadataFactory(new StaticMethodLoader());
+            } else {
+                $metadataFactory = new ClassMetadataFactory(new StaticMethodLoader());
+            }
+
+            $builder = Validation::createValidatorBuilder()
+                ->setConstraintValidatorFactory(new ConstraintValidatorFactory())
+                ->setTranslationDomain('validators')
+                ->setMetadataFactory($metadataFactory);
+
+            $extensions = [
+                new HttpFoundationExtension(),
+                new ValidatorExtension($builder->getValidator())
+            ];
+
+            return Forms::createFormFactoryBuilder()
+                ->addExtensions($extensions)
+                ->setResolvedTypeFactory(new ResolvedFormTypeFactory())
+                ->getFormFactory();
+        });
     }
 }
