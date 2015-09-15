@@ -191,7 +191,7 @@ class TwigBundle extends AbstractBundle
                         'getMasterTwig',
                         function () use ($registry) {
                             $result = $registry->get(TwigHelper::MASTER_TWIG, TwigHelper::TWIG_REGISTRY_SCOPE);
-                            $item = array_shift($result);
+                            $item = array_pop($result);
                             $registry->set(TwigHelper::MASTER_TWIG, $result, TwigHelper::TWIG_REGISTRY_SCOPE);
 
                             return strval($item);
