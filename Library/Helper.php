@@ -24,6 +24,14 @@ class Helper
         $registry = Container::get('registry');
 
         $result = $registry->get(self::GLOBAL_JS, self::TWIG_REGISTRY_SCOPE);
+
+        // skip if it's duplicate
+        foreach ($result as $node) {
+            if ($js['js'] == $node['js']) {
+                return;
+            }
+        }
+
         $result[] = $js;
         $registry->set(self::GLOBAL_JS, $result, self::TWIG_REGISTRY_SCOPE);
     }
@@ -39,6 +47,13 @@ class Helper
         $registry = Container::get('registry');
 
         $result = $registry->get(self::GLOBAL_CSS, self::TWIG_REGISTRY_SCOPE);
+        // skip if it's duplicate
+        foreach ($result as $node) {
+            if ($css['css'] == $node['css']) {
+                return;
+            }
+        }
+
         $result[] = $css;
         $registry->set(self::GLOBAL_CSS, $result, self::TWIG_REGISTRY_SCOPE);
     }
