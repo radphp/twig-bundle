@@ -23,7 +23,7 @@ class Helper
         /** @var Registry $registry */
         $registry = Container::get('registry');
 
-        $result = $registry->get(self::GLOBAL_JS, self::TWIG_REGISTRY_SCOPE);
+        $result = (array) $registry->get(self::GLOBAL_JS, self::TWIG_REGISTRY_SCOPE);
 
         // skip if it's duplicate
         foreach ($result as $node) {
@@ -46,7 +46,8 @@ class Helper
         /** @var Registry $registry */
         $registry = Container::get('registry');
 
-        $result = $registry->get(self::GLOBAL_CSS, self::TWIG_REGISTRY_SCOPE);
+        $result = (array) $registry->get(self::GLOBAL_CSS, self::TWIG_REGISTRY_SCOPE);
+
         // skip if it's duplicate
         foreach ($result as $node) {
             if ($css['css'] == $node['css']) {
